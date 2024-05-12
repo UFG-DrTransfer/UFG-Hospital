@@ -205,7 +205,10 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
                         case 1:
                             solicitacaoController.listarEmAberto();
                             Solicitacao solicitacao = solicitacaoController.getValido();
-                            HospitalUtil.validaEntidade(opcao);
+                            if (solicitacao != null && solicitacao.getDataTransferencia() != null) {
+                                throw new RuntimeException("Esta solicitacao ja foi finalizada. Operacao cancelada.");
+                            }
+                            HospitalUtil.validaEntidade(solicitacao);
                             do {
                                 try {
                                     setNomeDaClasse("Medico Destino");
