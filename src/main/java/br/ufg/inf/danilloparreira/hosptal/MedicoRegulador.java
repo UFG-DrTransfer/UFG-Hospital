@@ -44,6 +44,9 @@ public class MedicoRegulador extends Medico implements Mostrar {
      * @param medicoDestino
      */
     public void atualizaSolitacao(Solicitacao solicitacao, MedicoOrigemDestino medicoDestino) {
+        if (medicoDestino.equals(solicitacao.getMedicoOrigem())) {
+            throw new RuntimeException(String.format("O medico de destino e o mesmo medico da origem.", medicoDestino.getHospital().getNome()));
+        }
         if (!medicoDestino.getHospital().isDisponivel()) {
             throw new RuntimeException(String.format("Hospital %s selecionado nao esta disponivel", medicoDestino.getHospital().getNome()));
         }

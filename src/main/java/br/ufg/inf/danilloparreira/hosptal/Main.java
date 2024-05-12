@@ -3,6 +3,7 @@ package br.ufg.inf.danilloparreira.hosptal;
 import static br.ufg.inf.danilloparreira.hosptal.HospitalUtil.separador;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -32,6 +33,7 @@ public class Main {
     }
 
     public static void dados() {
+        System.out.println("INICIO CASDASTRO AUTOMATICO");
         Hospital hc = new Hospital(getProximoIdHospital(), "Hospital das Clinicas", "123", "Jorge", "321");
         hospitais.add(hc);
         Hospital hugo = new Hospital(getProximoIdHospital(), "Hugo", "456", "Amadeu", "999");
@@ -56,8 +58,10 @@ public class Main {
 
         medico1.adicionarPaciente(paciente1);
         medico2.adicionarPaciente(paciente2);
-
-        medico1.solicitarTransferencia(getProximoIdSolicitacoes(), paciente2, "Pediatria", "documento");
+        Solicitacao solicitacao = medico2.solicitarTransferencia(getProximoIdSolicitacoes(), paciente2, "Pediatria", "documento");
+        solicitacoes.add(solicitacao);
+        System.out.println("FIM CASDASTRO AUTOMATICO");
+        separador();
     }
 
     public static String operacoes() {
@@ -87,7 +91,7 @@ public class Main {
                     mostrarMedicoRegulador();
                     break;
                 case 4:
-                    mostrarPaciente();
+                    mostrarPaciente(null);
                     break;
                 case 5:
                     mostrarSolicitacoes(true);
@@ -143,7 +147,7 @@ public class Main {
                 int operacao = HospitalUtil.getValorInteger();
                 switch (operacao) {
                     case 1:
-                        MedicoOrigemDestino medico = (MedicoOrigemDestino) getMedicoValido(MedicoOrigemDestino.class);
+                        MedicoOrigemDestino medico = (MedicoOrigemDestino) getMedicoValido("Origem", MedicoOrigemDestino.class);
                         operacaoMedicoResponsavel2(medico);
                         break;
                     case 0:
@@ -161,17 +165,21 @@ public class Main {
         do {
             try {
                 System.out.println("Selecione a operacao:\n"
-                        + "1 - Solicitar Transferencia\n"
+                        + (!medico.getPacientes().isEmpty() ? "1 - Solicitar Transferencia\n" : "")
                         + "0 - Voltar ao menu;");
                 int operacao = HospitalUtil.getValorInteger();
-                switch (operacao) {
-                    case 1:
-                        operacaoMedicoResponsavelTransferencia(medico);
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        operacaoInvalida();
+                if (operacao == 1 && medico.getPacientes().isEmpty()) {
+                    operacaoInvalida();
+                } else {
+                    switch (operacao) {
+                        case 1:
+                            operacaoMedicoResponsavelTransferencia(medico);
+                            return;
+                        case 0:
+                            return;
+                        default:
+                            operacaoInvalida();
+                    }
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -181,12 +189,7 @@ public class Main {
 
     public static void operacaoMedicoResponsavelTransferencia(MedicoOrigemDestino medico) {
         HospitalUtil.separador();
-        System.out.println("LISTA DE PACIENTES");
-        int count = 1;
-        for (Paciente paciente : pacientes) {
-            System.out.printf("ID: %d\n", count++);
-            paciente.mostrarDados();
-        }
+        mostrarPaciente(medico);
         separador();
         System.out.println("SOLICITACAO TRANSFERENCIA");
         Paciente paciente = getPacienteValido(medico);
@@ -196,11 +199,10 @@ public class Main {
         solicitacoes.add(solicitacao);
     }
 
-    public static Medico getMedicoValido(Class classe) {
+    public static Medico getMedicoValido(String tipo, Class classe) {
         do {
             try {
-                System.out.println("Selecione o id do medico: ");
-                int id = HospitalUtil.getValorInteger();
+                int id = HospitalUtil.getValorInteger(String.format("Selecione o id do medico %s: ", tipo));
                 return getMedico(id, classe);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -253,31 +255,64 @@ public class Main {
         do {
             try {
                 separador();
-                System.out.println("Selecione a operacao:\n"
-                        + "1 - Listar Solicitacoes em aberto\n"
-                        + "0 - Voltar ao menu;");
-                int operacao = HospitalUtil.getValorInteger();
-                switch (operacao) {
-                    case 1:
+                List<Solicitacao> listaSolicitacaoAberto = solicitacoes.stream()
+                        .filter(s -> s.getDataTransferencia() == null)
+                        .collect(Collectors.toList());
 
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        operacaoInvalida();
+                System.out.println("Selecione a operacao:\n"
+                        + (listaSolicitacaoAberto.isEmpty() ? "" : "1 - Selecionar Medico Regulador;\n")
+                        + "0 - Voltar ao menu;");
+
+                int operacao = HospitalUtil.getValorInteger();
+
+                if (operacao == 1 && listaSolicitacaoAberto.isEmpty()) {
+                    operacaoInvalida();
+                } else {
+                    switch (operacao) {
+                        case 1:
+                            MedicoRegulador medicoRegulador = (MedicoRegulador) getMedicoValido("Destino", MedicoRegulador.class);
+                            operacaoMedicoReguladorSolicitacao(medicoRegulador);
+                            break;
+                        case 0:
+                            return;
+                        default:
+                            operacaoInvalida();
+                    }
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         } while (true);
     }
+//
+//    public static void operacaoMedicoRegulador() {
+//        do {
+//            try {
+//                separador();
+//                System.out.println("Selecione a operacao:\n"
+//                        + "1 - Listar Solicitacoes em aberto\n"
+//                        + "0 - Voltar ao menu;");
+//                int operacao = HospitalUtil.getValorInteger();
+//                switch (operacao) {
+//                    case 1:
+//                        mostrarSolicitacoes(false);
+//                        break;
+//                    case 0:
+//                        return;
+//                    default:
+//                        operacaoInvalida();
+//                }
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+//        } while (true);
+//    }
 
-    private static void mostrarPaciente() {
-        HospitalUtil.separador();
+    private static void mostrarPaciente(MedicoOrigemDestino medico) {
         System.out.println("LISTA DE PACIENTES");
         int count = 1;
-        for (Paciente paciente : pacientes) {
-            System.out.printf("ID: %d\n", count++);
+        List<Paciente> listaPacientes = medico == null ? pacientes : medico.getPacientes();
+        for (Paciente paciente : listaPacientes) {
             paciente.mostrarDados();
         }
     }
@@ -289,7 +324,7 @@ public class Main {
      */
     private static void mostrarSolicitacoes(boolean mostrarTudo) {
         HospitalUtil.separador();
-        System.out.printf("SOLICITACOES %s", !mostrarTudo ? "EM ABERTO" : "");
+        System.out.printf("SOLICITACOES %s\n", !mostrarTudo ? "EM ABERTO" : "");
         boolean contemSolicitacao = false;
         for (Solicitacao solicitacao : solicitacoes) {
             if (mostrarTudo || (!mostrarTudo && solicitacao.getDataTransferencia() == null)) {
@@ -298,47 +333,30 @@ public class Main {
             }
         }
         if (!contemSolicitacao) {
-            System.out.printf("Nao existe solicitacao %s", !mostrarTudo ? "em aberto." : ".");
+            System.out.printf("Nao existe solicitacao %s\n", !mostrarTudo ? "em aberto." : ".");
         }
-    }
-
-    public static void operacaoMedicoRegulador1() {
-        do {
-            try {
-                separador();
-                mostrarSolicitacoes(false);
-                System.out.println("Selecione a operacao:\n"
-                        + "1 - Selecionar solicitacao;\n"
-                        + "0 - Voltar ao menu;");
-                int operacao = HospitalUtil.getValorInteger();
-                switch (operacao) {
-                    case 1:
-                        MedicoRegulador medicoRegulador = (MedicoRegulador) getMedicoValido(MedicoRegulador.class);
-                        operacaoMedicoReguladorSolicitacao(medicoRegulador);
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        operacaoInvalida();
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } while (true);
     }
 
     public static void operacaoMedicoReguladorSolicitacao(MedicoRegulador medicoRegulador) {
         do {
             try {
                 separador();
-                mostrarSolicitacoes(false);
                 System.out.println("Selecione a operacao:\n"
                         + "1 - Realizar Transferencia;\n"
                         + "0 - Voltar ao menu;");
                 int operacao = HospitalUtil.getValorInteger();
                 switch (operacao) {
                     case 1:
-                        operacaoMedicoReguladorSolicitacao();
+                        Solicitacao solicitacao = getSolicitacaoValida();
+                        do {
+                            try {
+                                MedicoOrigemDestino medicoDestino = (MedicoOrigemDestino) getMedicoValido("Destino", MedicoOrigemDestino.class);
+                                medicoRegulador.atualizaSolitacao(solicitacao, medicoDestino);
+                                break;
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                            }
+                        } while (true);
                         break;
                     case 0:
                         return;
@@ -351,4 +369,25 @@ public class Main {
         } while (true);
     }
 
+    private static Solicitacao getSolicitacaoValida() {
+        do {
+            try {
+                mostrarSolicitacoes(false);
+                separador();
+                int id = HospitalUtil.getValorInteger("Selecione o id da solicitacao: ");
+                return getSolicitacao(id);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } while (true);
+    }
+
+    private static Solicitacao getSolicitacao(int id) {
+        for (Solicitacao solicitacao : solicitacoes) {
+            if (solicitacao.getId() == id) {
+                return solicitacao;
+            }
+        }
+        throw new RuntimeException(String.format("Nao foi encontrado a solicitacao com o id %d", id));
+    }
 }
