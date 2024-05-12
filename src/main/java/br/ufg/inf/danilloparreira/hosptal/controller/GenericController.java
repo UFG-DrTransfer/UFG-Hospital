@@ -5,6 +5,7 @@ import br.ufg.inf.danilloparreira.hosptal.respository.generic.GenericRepository;
 import br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil;
 import static br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil.getValorInteger;
 import static br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil.listaVazia;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GenericController<T extends SuperClasse, R extends GenericRepository<T>> {
@@ -15,11 +16,6 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
     public GenericController(R repository) {
         this.repository = repository;
         this.nomeDaClasse = repository.getNomeDaClasse();
-    }
-
-    public GenericController(R repository, String nomeDaClasse) {
-        this.repository = repository;
-        this.nomeDaClasse = nomeDaClasse;
     }
 
     public String getNomeDaClasse() {
@@ -35,7 +31,7 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
     }
 
     /**
-     * Lista todos dadas da entidade
+     * Lista todos dados da entidade mostrando ele
      */
     public void listar() {
         if (findAll().isEmpty()) {
@@ -64,24 +60,27 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
     }
 
     /**
-     * Lista todos dados da entidade filtrando a classe caso existir
+     * Lista todos dados da entidade filtrando a classe caso existir<br/>
+     * <b>Exemplo:</b> lista(MedicoOrigemDestino.class) ou
+     * lista(MedicoRegulador.class)
      *
      * @param classe
      */
     public void listar(Class<? extends T> classe) {
-        if (findAll().isEmpty()) {
-            listaVazia();
-        } else {
-            for (T entidade : findAll()) {
-                if (classe == null || entidade.getClass().equals(classe)) {
-                    entidade.mostrarDados();
-                    HospitalUtil.separador();
-                }
+        if (classe == null) {
+            throw new RuntimeException("A classe nao pode ser null ");
+        }
+        List<T> filtrados = new ArrayList<>();
+        for (T entidade : findAll()) {
+            if (entidade.getClass().equals(classe)) {
+                filtrados.add(entidade);
             }
         }
+        listar(filtrados);
     }
 
     /**
+     * Busca uma entidade valida ou null
      *
      * @param entidade
      * @return
@@ -110,6 +109,13 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
         return getEntidade(id, findAll());
     }
 
+    /**
+     * Busca uma entidade valida dentro a lista passa
+     *
+     * @param lista
+     * @return null caso queira cancelar a operacao<br/>
+     * <b>entidade</b> valida
+     */
     public T getValido(List<T> lista) {
         do {
             try {
@@ -125,11 +131,13 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
     }
 
     /**
-     * Busca entidade pelo id em uma lista Especifica
+     * Busca entidade pelo id em uma lista Especifica validando caso exista
      *
      * @param id
      * @param lista
-     * @return
+     * @return entidade conforme o id dentro da lista informada<br/>
+     * @throws RuntimeException caso nao encontrar nenhum item da lista com o id
+     * informado
      */
     protected T getEntidade(int id, List<T> lista) {
         for (T entidade : lista) {
@@ -154,7 +162,7 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
                     return null;
                 }
                 return getEntidade(id, classe);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
             }
         } while (true);
@@ -169,7 +177,8 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
      */
     protected T getEntidade(int id, Class<? extends T> classe) {
         for (T entidade : findAll()) {
-            if (entidade.getClass() == classe && entidade.getId() == id) {
+            if (entidade.getClass() == classe
+                    && entidade.getId() == id) {
                 return entidade;
             }
         }

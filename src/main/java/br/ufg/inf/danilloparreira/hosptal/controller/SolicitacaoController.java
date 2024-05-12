@@ -6,16 +6,17 @@ import br.ufg.inf.danilloparreira.hosptal.respository.SolicitacaoRepositoryImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Danillo Tomaz Parreira
- */
 public class SolicitacaoController extends GenericController<Solicitacao, SolicitacaoRepository> {
 
     public SolicitacaoController() {
         super(new SolicitacaoRepositoryImpl());
     }
 
+    /**
+     * Filtra de todas as solicitacoes somente a solicitacao em aberto
+     *
+     * @return lista de solicitacao em aberto.
+     */
     public List<Solicitacao> findSolicitacaoEmAberto() {
         List<Solicitacao> listaFiltrada = new ArrayList<>();
         for (Solicitacao solicitacao : findAll()) {
@@ -26,6 +27,9 @@ public class SolicitacaoController extends GenericController<Solicitacao, Solici
         return listaFiltrada;
     }
 
+    /**
+     * Mostra na tela todas solicitacoes em aberto
+     */
     public void listarEmAberto() {
         listar(findSolicitacaoEmAberto());
     }

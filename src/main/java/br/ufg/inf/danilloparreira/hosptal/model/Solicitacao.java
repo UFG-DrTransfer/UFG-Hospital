@@ -80,7 +80,6 @@ public class Solicitacao extends SuperClasse {
 
     @Override
     public void mostrarDados() {
-        HospitalUtil.separador();
         HospitalUtil.dadosId(id);
         System.out.printf("Hospital Origem: %s\nMedico Origem: %s\nPaciente: %s\nProcedimento: %s\nDocumento: %s\nData Solicitacao: %s\nStatus: %s\n",
                 medicoOrigem.getHospital().getNome(),
@@ -98,14 +97,6 @@ public class Solicitacao extends SuperClasse {
                     medicoDestino.getHospital().getNome(),
                     medicoDestino.getNome());
         }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + Objects.hashCode(this.paciente);
-        hash = 37 * hash + Objects.hashCode(this.dataSolicitacao);
-        return hash;
     }
 
     @Override

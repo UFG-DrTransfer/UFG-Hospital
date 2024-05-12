@@ -7,19 +7,33 @@ import java.util.Scanner;
 public abstract class HospitalUtil {
 
     private static final Scanner leitor = new Scanner(System.in);
-    public static final String SELECIONE_UMA_OPCAO = "Selecione uma Opcao";
 
     public static void separador() {
         System.out.println("--------------------------------------------------");
     }
 
+    /**
+     * Lista todas as opcoes passada mais a opcao 0 sair/voltar menu
+     *
+     * @param menuPrincipal
+     * @param opcoes
+     * @return quantidade de opcoes disponiveis
+     */
     public static int listaOpcoes(String... opcoes) {
         return listaOpcoes(false, opcoes);
     }
 
+    /**
+     * Lista todas as opcoes passada mais a opcao 0 sair quando menuPrincipal
+     * for false e voltar menu quando menuPrincipal for true
+     *
+     * @param menuPrincipal
+     * @param opcoes
+     * @return quantidade de opcoes disponiveis
+     */
     public static int listaOpcoes(boolean menuPrincipal, String... opcoes) {
         StringBuilder sb = new StringBuilder();
-        sb.append(SELECIONE_UMA_OPCAO).append("\n");
+        sb.append("Selecione uma Opcao").append("\n");
         int count = 0;
         for (String opcao : opcoes) {
             if (!opcao.trim().isEmpty()) {
@@ -39,11 +53,11 @@ public abstract class HospitalUtil {
      * @return true caso opcao estiver entre 0 e a quantidadeOpcao
      */
     public static boolean validaOpcao(int quantidadeOpcao, int opcao) {
-        if (!(opcao >= 0 && opcao <= quantidadeOpcao)) {
-            HospitalUtil.opcaoInvalida();
-            return false;
+        if (opcao >= 0 && opcao <= quantidadeOpcao) {
+            return true;
         }
-        return true;
+        HospitalUtil.opcaoInvalida();
+        return false;
     }
 
     public static void opcaoInvalida() {
@@ -86,19 +100,19 @@ public abstract class HospitalUtil {
             try {
                 String valor = getValor(texto);
                 return validarInt(valor);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
             }
         } while (true);
     }
 
-    public static String getValor() {
-        return getValor(null);
+    public static String getValor(String texto) {
+        System.out.println(texto == null ? "Informe o valor da opcao:" : texto);
+        return leitor.next();
     }
 
-    public static String getValor(String texto) {
-        System.out.println(texto == null ? "Informe o valor da operacao:" : texto);
-        return leitor.next();
+    public static String getValor() {
+        return getValor(null);
     }
 
     public static Integer validarInt(String valor) {

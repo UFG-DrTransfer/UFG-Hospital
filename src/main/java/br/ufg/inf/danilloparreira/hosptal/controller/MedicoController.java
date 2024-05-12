@@ -18,34 +18,37 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
 
     private final PacienteController pacienteController;
     private final SolicitacaoController solicitacaoController;
-    private static final String MEDICO__REGULADOR = "Medico Regulador";
 
-    public MedicoController(PacienteController pacienteController, SolicitacaoController solicitacaoController) {
+    /**
+     * É passado o pacienteController e a solicitacaoControle para manter os
+     * dados já cadastrados do repository destestes controlers
+     *
+     * @param pacienteController
+     * @param solicitacaoController
+     */
+    public MedicoController(PacienteController pacienteController,
+            SolicitacaoController solicitacaoController) {
         super(new MedicoRepositoryImpl());
         this.pacienteController = pacienteController;
         this.solicitacaoController = solicitacaoController;
     }
 
+    /**
+     * Lista os medicos de origem/destino
+     */
     private void listarMedicoOrigemDestino() {
         separador();
         System.out.println("LISTA DE MEDICO ORIGEM/DESTINO");
         super.listar(MedicoOrigemDestino.class);
     }
 
-    private void listarMedicoOrigemDestino(MedicoOrigemDestino medicoAtual) {
-        separador();
-        System.out.println("LISTA DE MEDICO ORIGEM/DESTINO");
-        listar(medicoAtual.getHospital());
-    }
-
     /**
      * Da lista de todos medicos ele filtra por medicoOrigemDestino, medico que
      * nao seja do mesmo hospital e o hospital do medico que esteja disponivel.
      *
-     * @param classe
      * @param hospital
      */
-    private void listar(Hospital hospital) {
+    public void listar(Hospital hospital) {
         List<MedicoOrigemDestino> filtrado = new ArrayList<>();
         for (Medico entidade : findAll()) {
             if (entidade instanceof MedicoOrigemDestino
@@ -54,13 +57,25 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
                 filtrado.add((MedicoOrigemDestino) entidade);
             }
         }
+        separador();
+        System.out.println("LISTA DE MEDICO ORIGEM/DESTINO");
         super.listar(filtrado);
     }
 
+    /**
+     * Adiciona o paciente ao medicoOrigem fazendo as validacoes necessárias
+     *
+     * @param medico
+     * @param paciente
+     * @return true caso tenha adicionado e false caso não tenha adicionado
+     */
     public boolean adicionarPaciente(MedicoOrigemDestino medico, Paciente paciente) {
         return repository.addPaciente(medico, paciente);
     }
 
+    /**
+     * Operacao principal do Medico Origem/Destino
+     */
     public void operacaoSelecionarMedicoOrigem() {
         do {
             try {
@@ -86,6 +101,12 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
         } while (true);
     }
 
+    /**
+     * Operacao para a solicitacao de transferencia passando o medico informado
+     * na operacao anterior
+     *
+     * @param medico a fazer a solicitacao de transferencia
+     */
     private void operacaoSolicitarTransferencia(MedicoOrigemDestino medico) {
         do {
             try {
@@ -108,6 +129,11 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
         } while (true);
     }
 
+    /**
+     * Iniciado processo de solicitacao de transferencia do medico Origem
+     *
+     * @param medico
+     */
     private void solicitacaoTransferencia(MedicoOrigemDestino medico) {
         try {
             System.out.println("SOLICITACAO TRANSFERENCIA");
@@ -118,28 +144,34 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
             String documento = HospitalUtil.getValor("Informe o nome documento:");
             Solicitacao solicitacao = medico.solicitarTransferencia(paciente, procedimento, documento);
             solicitacaoController.adicionar(solicitacao);
-        } catch (HospitalException ex) {
+        } catch (RuntimeException | HospitalException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
+    /**
+     * lista medico regulador
+     */
     private void listarMedicoRegulador() {
         separador();
         System.out.println("LISTA DE MEDICO REGULADOR");
         super.listar(MedicoRegulador.class);
     }
 
+    /**
+     * Operacao principal do medico regulador
+     */
     public void operacaoMedicoRegulador() {
         do {
             try {
                 listarMedicoRegulador();
-                List<Solicitacao> listaSolicitacaoAberto = solicitacaoController.findAll();
-                int quantidadeOpcao = HospitalUtil.listaOpcoes(!listaSolicitacaoAberto.isEmpty() ? "Selecionar Medico Regulador:" : "");
+                List<Solicitacao> listaSolicitacaoAberto = solicitacaoController.findSolicitacaoEmAberto();
+                int quantidadeOpcao = HospitalUtil.listaOpcoes(!listaSolicitacaoAberto.isEmpty() ? "Selecionar Medico Regulador" : "");
                 int opcao = HospitalUtil.getValorInteger();
                 if (HospitalUtil.validaOpcao(quantidadeOpcao, opcao)) {
                     switch (opcao) {
                         case 1:
-                            setNomeDaClasse(MEDICO__REGULADOR);
+                            setNomeDaClasse("Medico Regulador");
                             listarMedicoRegulador();
                             MedicoRegulador medicoRegulador = (MedicoRegulador) getValido(MedicoRegulador.class);
                             operacaoMedicoReguladorSolicitacao(medicoRegulador);
@@ -156,6 +188,12 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
         } while (true);
     }
 
+    /**
+     * Operacao de confirmacao de transferencia de um paciente de um medico ao
+     * outro
+     *
+     * @param medicoRegulador
+     */
     private void operacaoMedicoReguladorSolicitacao(MedicoRegulador medicoRegulador) {
         do {
             try {
@@ -171,11 +209,13 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
                             do {
                                 try {
                                     setNomeDaClasse("Medico Destino");
-                                    listarMedicoOrigemDestino(solicitacao.getMedicoOrigem());
+                                    listar(solicitacao.getMedicoOrigem().getHospital());
                                     MedicoOrigemDestino medicoDestino = (MedicoOrigemDestino) getValido(MedicoOrigemDestino.class);
                                     validaEntidade(medicoDestino);
                                     medicoRegulador.atualizaSolitacao(solicitacao, medicoDestino);
-                                    repository.transferirPaciente(solicitacao.getMedicoOrigem(), solicitacao.getMedicoDestino(), solicitacao.getPaciente());
+                                    repository.transferirPaciente(solicitacao.getMedicoOrigem(),
+                                            solicitacao.getMedicoDestino(),
+                                            solicitacao.getPaciente());
                                     break;
                                 } catch (HospitalException e) {
                                     System.out.println(e.getMessage());
@@ -191,7 +231,7 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
                             opcaoInvalida();
                     }
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException | HospitalException e) {
                 System.out.println(e.getMessage());
             }
         } while (true);

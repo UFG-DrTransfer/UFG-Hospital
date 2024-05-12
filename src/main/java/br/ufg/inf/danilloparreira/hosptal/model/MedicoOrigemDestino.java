@@ -47,7 +47,8 @@ public class MedicoOrigemDestino extends Medico {
      * @param paciente
      * @param procedimento
      * @param documento
-     * @return
+     * @return a solicitacao
+     * @throws RuntimeException irá gerar mensagem de erro em caso der erro
      */
     public Solicitacao solicitarTransferencia(Paciente paciente, String procedimento, String documento) {
         if (!pacientes.contains(paciente)) {

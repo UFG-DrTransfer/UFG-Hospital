@@ -28,6 +28,13 @@ public class Paciente extends SuperClasse {
         return idade;
     }
 
+    /**
+     * atualiza a idade do paciente
+     *
+     * @param idade tem que ser entre 0 e 130 anos
+     * @throws RuntimeException gera mensagem de erro caso idade for diferente
+     * da especificada
+     */
     public void setIdade(int idade) {
         if (idade < 0 || idade > 130) {
             throw new RuntimeException("Idade nao pode ser menor que zero ou maior que 130.");

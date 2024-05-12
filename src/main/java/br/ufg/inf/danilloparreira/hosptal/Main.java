@@ -21,6 +21,9 @@ public class Main {
     private static final SolicitacaoController solicitacaoController = new SolicitacaoController();
     private static final MedicoController medicoController = new MedicoController(pacienteController, solicitacaoController);
 
+    /**
+     * Dados inseridos manual
+     */
     public static void run() {
         System.out.println("INICIO CASDASTRO AUTOMATICO");
         Hospital hc = new Hospital("Hospital das Clinicas", "123", "Jorge", "321");
@@ -45,9 +48,9 @@ public class Main {
         pacienteController.adicionar(paciente2);
         Paciente paciente3 = new Paciente("Josiana", 18, Sexo.FEMININO);
         pacienteController.adicionar(paciente3);
-        
+
         medicoController.adicionarPaciente(medico2, paciente2);
-        
+
         Solicitacao solicitacao = medico2.solicitarTransferencia(paciente2, "Pediatria", "documento");
         solicitacaoController.adicionar(solicitacao);
         System.out.println("FIM CASDASTRO AUTOMATICO");

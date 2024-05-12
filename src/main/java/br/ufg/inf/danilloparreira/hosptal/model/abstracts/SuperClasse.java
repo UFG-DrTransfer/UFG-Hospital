@@ -12,5 +12,8 @@ public abstract class SuperClasse {
         this.id = id;
     }
 
+    /**
+     * Mostra os dados da classe
+     */
     public abstract void mostrarDados();
 }

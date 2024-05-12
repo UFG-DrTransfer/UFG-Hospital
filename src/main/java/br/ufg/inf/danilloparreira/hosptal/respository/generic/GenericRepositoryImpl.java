@@ -39,6 +39,7 @@ public class GenericRepositoryImpl<T extends SuperClasse> implements GenericRepo
             }
             entidade.setId(getNextId());
             lista.add(entidade);
+            //TODO: fazer validacao se contem mesmo id, caso contrário atualiza o id para o proximo.
             HospitalUtil.cadastradoComSucesso(nomeDaClasse);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
