@@ -39,7 +39,7 @@ public abstract class HospitalUtil {
      * @return true caso opcao estiver entre 0 e a quantidadeOpcao
      */
     public static boolean validaOpcao(int quantidadeOpcao, int opcao) {
-        if (opcao >= 0 && opcao > quantidadeOpcao) {
+        if (!(opcao >= 0 && opcao <= quantidadeOpcao)) {
             HospitalUtil.opcaoInvalida();
             return false;
         }

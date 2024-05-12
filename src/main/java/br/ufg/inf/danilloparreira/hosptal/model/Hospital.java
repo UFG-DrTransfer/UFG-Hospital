@@ -70,7 +70,6 @@ public class Hospital extends SuperClasse{
 
     @Override
     public void mostrarDados() {
-        HospitalUtil.separador();
         HospitalUtil.dadosId(id);
         System.out.printf("Hospital: %s\nCNES: %s\nSituacao: %s\nResponsavel: %s\nContato %s\n",
                 nome, cnes, disponibilidade(), responsavel, contato);

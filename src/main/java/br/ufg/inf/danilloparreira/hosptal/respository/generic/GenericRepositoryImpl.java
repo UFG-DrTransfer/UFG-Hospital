@@ -30,13 +30,14 @@ public class GenericRepositoryImpl<T extends SuperClasse> implements GenericRepo
         return lista;
     }
 
+    @Override
     public void add(T entidade) {
         try {
-            entidade.setId(getNextId());
             if (lista.contains(entidade)) {
                 HospitalUtil.duplicado(nomeDaClasse);
                 return;
             }
+            entidade.setId(getNextId());
             lista.add(entidade);
             HospitalUtil.cadastradoComSucesso(nomeDaClasse);
         } catch (RuntimeException e) {

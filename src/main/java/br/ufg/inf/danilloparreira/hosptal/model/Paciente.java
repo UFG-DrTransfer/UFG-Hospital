@@ -45,7 +45,6 @@ public class Paciente extends SuperClasse {
 
     @Override
     public void mostrarDados() {
-        HospitalUtil.separador();
         HospitalUtil.dadosId(id);
         System.out.printf("Nome: %s\nIdade: %d\nSexo: %s\n", nome, idade, sexo.getDescricao());
     }

@@ -2,7 +2,6 @@ package br.ufg.inf.danilloparreira.hosptal.model;
 
 import br.ufg.inf.danilloparreira.hosptal.model.abstracts.Medico;
 import br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil;
-import br.ufg.inf.danilloparreira.hosptal.model.interfaces.Mostrar;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,9 +52,15 @@ public class MedicoRegulador extends Medico {
         if (!medicoDestino.getHospital().isDisponivel()) {
             throw new RuntimeException(String.format("Hospital %s selecionado nao esta disponivel", medicoDestino.getHospital().getNome()));
         }
+        if (medicoDestino.getHospital() == solicitacao.getMedicoOrigem().getHospital()) {
+            throw new RuntimeException(String.format("Hospital de destino %s nao pode ser o mesmo hospital da origem.", medicoDestino.getHospital().getNome()));
+        }
         solicitacao.setMedicoRegulador(this);
         solicitacao.setMedicoDestino(medicoDestino);
         medicoDestino.getHospital().atualizaDisponivel();
+        if (!solicitacao.getMedicoOrigem().getHospital().isDisponivel()) {
+            solicitacao.getMedicoOrigem().getHospital().atualizaDisponivel();
+        }
         System.out.println("Transferencia efetivada.");
         solicitacao.mostrarDados();
     }

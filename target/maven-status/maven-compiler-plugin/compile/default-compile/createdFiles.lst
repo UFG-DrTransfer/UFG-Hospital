@@ -4,7 +4,6 @@ br\ufg\inf\danilloparreira\hosptal\respository\SolicitacaoRepository.class
 br\ufg\inf\danilloparreira\hosptal\respository\PacienteRepositoryImpl.class
 br\ufg\inf\danilloparreira\hosptal\respository\HospitalRepository.class
 br\ufg\inf\danilloparreira\hosptal\model\abstracts\SuperClasse.class
-br\ufg\inf\danilloparreira\hosptal\model\interfaces\Mostrar.class
 br\ufg\inf\danilloparreira\hosptal\model\MedicoRegulador.class
 br\ufg\inf\danilloparreira\hosptal\controller\SolicitacaoController.class
 br\ufg\inf\danilloparreira\hosptal\respository\SolicitacaoRepositoryImpl.class

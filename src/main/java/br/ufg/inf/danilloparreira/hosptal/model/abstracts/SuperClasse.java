@@ -1,12 +1,6 @@
 package br.ufg.inf.danilloparreira.hosptal.model.abstracts;
 
-import br.ufg.inf.danilloparreira.hosptal.model.interfaces.Mostrar;
-
-/**
- *
- * @author Danillo Tomaz Parreira
- */
-public abstract class SuperClasse implements Mostrar {
+public abstract class SuperClasse {
 
     protected int id;
 
@@ -18,4 +12,5 @@ public abstract class SuperClasse implements Mostrar {
         this.id = id;
     }
 
+    public abstract void mostrarDados();
 }

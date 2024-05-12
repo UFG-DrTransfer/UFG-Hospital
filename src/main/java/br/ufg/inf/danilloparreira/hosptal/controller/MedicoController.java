@@ -13,17 +13,12 @@ import br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil;
 import static br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author Danillo Tomaz Parreira
- */
 public class MedicoController extends GenericController<Medico, MedicoRepository> {
 
     private final PacienteController pacienteController;
     private final SolicitacaoController solicitacaoController;
+    private static final String MEDICO__REGULADOR = "Medico Regulador";
 
     public MedicoController(PacienteController pacienteController, SolicitacaoController solicitacaoController) {
         super(new MedicoRepositoryImpl());
@@ -116,7 +111,7 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
     private void solicitacaoTransferencia(MedicoOrigemDestino medico) {
         try {
             System.out.println("SOLICITACAO TRANSFERENCIA");
-            pacienteController.listar(medico);
+            pacienteController.listar(medico.getPacientes());
             Paciente paciente = pacienteController.getValido(medico.getPacientes());
             validaEntidade(paciente);
             String procedimento = HospitalUtil.getValor("Informe o nome do procedimento:");
@@ -160,19 +155,19 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
             }
         } while (true);
     }
-    private static final String MEDICO__REGULADOR = "Medico Regulador";
 
     private void operacaoMedicoReguladorSolicitacao(MedicoRegulador medicoRegulador) {
         do {
             try {
                 separador();
-                int quantidadeOpcao = HospitalUtil.listaOpcoes("Realizar Transferencia:");
+                int quantidadeOpcao = HospitalUtil.listaOpcoes(solicitacaoController.findSolicitacaoEmAberto().isEmpty() ? "" : "Realizar Transferencia");
                 int opcao = HospitalUtil.getValorInteger();
                 if (HospitalUtil.validaOpcao(quantidadeOpcao, opcao)) {
                     switch (opcao) {
                         case 1:
                             solicitacaoController.listarEmAberto();
                             Solicitacao solicitacao = solicitacaoController.getValido();
+                            HospitalUtil.validaEntidade(opcao);
                             do {
                                 try {
                                     setNomeDaClasse("Medico Destino");
@@ -180,6 +175,7 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
                                     MedicoOrigemDestino medicoDestino = (MedicoOrigemDestino) getValido(MedicoOrigemDestino.class);
                                     validaEntidade(medicoDestino);
                                     medicoRegulador.atualizaSolitacao(solicitacao, medicoDestino);
+                                    repository.transferirPaciente(solicitacao.getMedicoOrigem(), solicitacao.getMedicoDestino(), solicitacao.getPaciente());
                                     break;
                                 } catch (HospitalException e) {
                                     System.out.println(e.getMessage());

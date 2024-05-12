@@ -44,6 +44,15 @@ public interface MedicoRepository extends GenericRepository<Medico> {
         return true;
     }
 
+    default boolean transferirPaciente(MedicoOrigemDestino origem, MedicoOrigemDestino destino, Paciente paciente) {
+        boolean confirmacao = false;
+        confirmacao = removerPaciente(origem, paciente);
+        if (!confirmacao) {
+            throw new RuntimeException("Nao foi possivel remover o paciente de origem.");
+        }
+        return addPaciente(destino, paciente);
+    }
+
     /**
      * Método com a finalidade de listar os médicos conforme o tipo do medico,
      * se passar null no tipo ele irá retornar toda a lista

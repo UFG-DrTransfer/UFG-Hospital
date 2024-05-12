@@ -14,10 +14,6 @@ import br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil;
 import static br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil.opcaoInvalida;
 import static br.ufg.inf.danilloparreira.hosptal.utils.HospitalUtil.separador;
 
-/**
- *
- * @author parre
- */
 public class Main {
 
     private static final HospitalController hospitalController = new HospitalController();
@@ -49,8 +45,9 @@ public class Main {
         pacienteController.adicionar(paciente2);
         Paciente paciente3 = new Paciente("Josiana", 18, Sexo.FEMININO);
         pacienteController.adicionar(paciente3);
-
+        
         medicoController.adicionarPaciente(medico2, paciente2);
+        
         Solicitacao solicitacao = medico2.solicitarTransferencia(paciente2, "Pediatria", "documento");
         solicitacaoController.adicionar(solicitacao);
         System.out.println("FIM CASDASTRO AUTOMATICO");
@@ -59,9 +56,7 @@ public class Main {
 
     public static void main(String[] args) {
         run();
-        separador();
         System.out.println("APOS SELECIONAR UMA OPCAO E POSSIVEL CANCELAR DIGITANDO 0.");
-        separador();
         do {
             HospitalUtil.separador();
             int quantidadeOpcao = HospitalUtil.listaOpcoes(true,

@@ -1,7 +1,5 @@
 package br.ufg.inf.danilloparreira.hosptal.model.abstracts;
 
-import br.ufg.inf.danilloparreira.hosptal.model.abstracts.SuperClasse;
-
 public abstract class Medico extends SuperClasse {
 
     private String nome;

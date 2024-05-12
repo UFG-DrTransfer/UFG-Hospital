@@ -54,7 +54,7 @@ public class GenericController<T extends SuperClasse, R extends GenericRepositor
      * @param lista
      */
     public void listar(List<? extends T> lista) {
-        if (findAll().isEmpty()) {
+        if (lista.isEmpty()) {
             listaVazia();
         } else {
             for (T entidade : lista) {
