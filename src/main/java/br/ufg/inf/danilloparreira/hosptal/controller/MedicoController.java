@@ -200,45 +200,4 @@ public class MedicoController extends GenericController<Medico, MedicoRepository
             }
         } while (true);
     }
-//
-//    private static Solicitacao getSolicitacaoValida() {
-//        do {
-//            try {
-//                mostrarSolicitacoes(false);
-//                separador();
-//                int id = HospitalUtil.getValorInteger("Selecione o id da solicitacao: ");
-//                return getSolicitacao(id);
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
-//        } while (true);
-//    }
-
-//    /**
-//     *
-//     * @param mostrarTudo caso true mostra todas solicitacoes, caso false filtra
-//     * a solicitacao que esteja em aberto pela data de transferencia
-//     */
-//    private static void mostrarSolicitacoes(boolean mostrarTudo) {
-//        System.out.printf("SOLICITACOES %s\n", !mostrarTudo ? "EM ABERTO" : "");
-//        boolean contemSolicitacao = false;
-//        for (Solicitacao solicitacao : solicitacoes) {
-//            if (mostrarTudo || (!mostrarTudo && solicitacao.getDataTransferencia() == null)) {
-//                solicitacao.mostrarDados();
-//                contemSolicitacao = true;
-//            }
-//        }
-//        if (!contemSolicitacao) {
-//            System.out.printf("Nao existe solicitacao %s\n", !mostrarTudo ? "em aberto." : ".");
-//        }
-//    }
-//
-//    private static Solicitacao getSolicitacao(int id) {
-//        for (Solicitacao solicitacao : solicitacoes) {
-//            if (solicitacao.getId() == id) {
-//                return solicitacao;
-//            }
-//        }
-//        throw new RuntimeException(String.format("Nao foi encontrado a solicitacao com o id %d", id));
-//    }
 }

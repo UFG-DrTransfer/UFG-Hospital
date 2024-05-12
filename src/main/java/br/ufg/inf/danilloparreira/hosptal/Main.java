@@ -98,43 +98,4 @@ public class Main {
             }
         } while (true);
     }
-//
-//    public static class HospitalOperacao {
-//
-//        /**
-//         * Método com a finalidade de listar os hospitais cadastrados.
-//         */
-//        public static void listar() {
-//            HospitalUtil.separador();
-//            System.out.println("LISTA DE HOSPITAIS");
-//            for (Hospital hospital : hospitais) {
-//                hospital.mostrarDados();
-//            }
-//        }
-//    }
-//
-//    public static class MedicoOrigemOperacao {
-//
-//    }
-//
-//    public static class MedicoReguladorOperacao {
-//
-//    }
-//
-//    
-//    public GenericRepository getHospitalRepository() {
-//        return hospitalRepository;
-//    }
-//
-//    public GenericRepository getSolicitacaoRepository() {
-//        return solicitacaoRepository;
-//    }
-//
-//    public GenericRepository getMedicoRepository() {
-//        return medicoRepository;
-//    }
-//
-//    public GenericRepository getPacienteRepository() {
-//        return pacienteRepository;
-//    }
 }
