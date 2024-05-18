@@ -1,5 +1,7 @@
 ﻿# UFG-Hospital
-Trabalho da Gerenciamento Ágil de Projetos
+Este repositorio foi utilizado nas matérias de:
+ - Fundamentos de Orientação a Objetos
+ - Gerenciamento Ágil de Projetos;
 # Sistema de Transferência de Pacientes (STP)
 ## Escopo do problema
 A falta de prática na realização de transferências por parte de alguns médicos, combinada com as dificuldades inerentes à movimentação de pacientes entre unidades hospitalares, muitas vezes em ambientes desconhecidos, torna as transferências de procedimentos desafiadoras e com comunicação dificultada entre as partes envolvidas. Essa situação evidencia a necessidade de um sistema de gerenciamento de transferências hospitalares, capaz de auxiliar os principais
